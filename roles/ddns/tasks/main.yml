@@ -1,0 +1,18 @@
+---
+- name: Get public IP
+  ipify_facts:
+    timeout: 15
+  tags: ddns
+
+- name: Add raw DNS result to CloudFlare
+  cloudflare_dns:
+    account_email: "{{ cf_api_email }}"
+    account_api_token: "{{ cf_api_key }}"
+    proxied: "{{ cf_proxied | default('no') }}"
+    solo: "{{ cf_solo | default('yes') }}"
+    type: "{{ cf_type | default('A') }}"
+    record: "{{ record }}"
+    state: "{{ cf_state | default('present') }}"
+    value: "{{ ipify_public_ip }}"
+    zone: "{{ zone }}"
+  tags: ddns
